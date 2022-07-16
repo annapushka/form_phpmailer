@@ -15,7 +15,7 @@
     //Кому отправить
     $mail->addAddress('smirnova_spb@mail.ru');
     //Тема письма
-    $mail->Subject = 'Завка на ремонтные работы';
+    $mail->Subject = 'Заявка на ремонтные работы';
 
     //Тело письма
     $body = '<h1>Добрый день. Новая заявка.</h1>';
@@ -40,7 +40,7 @@
         //грузим файл
         if (copy($_FILES['image']['tmp_name'], $filePath)){
             $filePath = $filePath;
-            $body.='<p><strong>Фотография объекта в пприложении</strong></p>';
+            $body.='<p><strong>Фотография объекта в приложении</strong></p>';
             $mail->addAttachment($fileAttach);
         }
     }
