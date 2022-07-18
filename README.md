@@ -4,7 +4,7 @@ Standard form with sending data to the email.
 
 ## Description
 
-To use it, just enter your mail data in the sendmail.php file.
+To use it, just enter your mail data in the [sendmail.php](sendmail.php) file.
 
 ## Technology stack
 <p>
