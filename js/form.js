@@ -1,7 +1,7 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('form');
     form.addEventListener('submit', formSend);
-   
+
     async function formSend(e) {
         e.preventDefault();
         document.getElementById('message').innerHTML = "";
@@ -17,10 +17,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'POST',
                 body: formData
             });
-            if(response.ok) {
+            if (response.ok) {
                 let result = await response.json();
                 alert(result.message);
-                formPreview.innerHTML='';
+                formPreview.innerHTML = '';
                 form.reset();
                 form.classList.remove('_sending');
             } else {
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let error = 0;
         let formReq = document.querySelectorAll('._req');
 
-        for(let index = 0; index < formReq.length; index++) {
+        for (let index = 0; index < formReq.length; index++) {
             const input = formReq[index];
             formRemoveError(input);
             if (input.classList.contains('_email')) {
@@ -45,8 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     formAddError(input);
                     error++;
                 }
-            } 
-            else if (input.classList.contains('_phone')) {
+            } else if (input.classList.contains('_phone')) {
                 if (phoneTest(input)) {
                     formAddError(input);
                     error++;
@@ -68,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function formRemoveError(input) {
         input.classList.remove('_error');
     }
-    
+
     function emailTest(input) {
         return !/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(input.value);
     }
@@ -99,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         var reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             formPreview.innerHTML = `<img src="${e.target.result}" alt="photo">`;
         };
         reader.onerror = function (e) {

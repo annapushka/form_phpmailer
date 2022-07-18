@@ -1,5 +1,6 @@
 <?php
     use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\SMTP;
     use PHPMailer\PHPMailer\Exception;
 
     require 'phpmailer/src/Exception.php';
@@ -7,19 +8,26 @@
     require 'phpmailer/src/SMTP.php';
 
     $mail = new PHPMailer(true);
-    $mail->CharSet = 'UTF-8';
-    $mail->setLanguage('ru', 'phpmailer/language/');
-    $mail->IsHTML(true);
 
-    //От кого письмо
-    $mail->setFrom('smirnova_spb@mail.ru', 'Клиент');
-    //Кому отправить
-    $mail->addAddress('smirnova_spb@mail.ru');
-    //Тема письма
-    $mail->Subject = 'Заявка на ремонтные работы';
+    $mail->isSMTP();   
+    $mail->CharSet = "UTF-8";
+    $mail->SMTPAuth   = true;
+    // $mail->SMTPDebug = 2;
+    $mail->Debugoutput = function($str, $level) {$GLOBALS['status'][] = $str;};
+
+    // Настройки вашей почты
+    $mail->Host       = 'smtp.example.com'; // SMTP сервера вашей почты
+    $mail->Username   = 'user'; // Логин на почте
+    $mail->Password   = 'secret'; // Пароль для внешнего приложения
+    $mail->SMTPSecure = 'ssl';
+    $mail->Port       = 465;
+    $mail->setFrom('from@example.com', 'Mailer'); // Адрес самой почты и имя отправителя
+
+    // Получатель письма
+    $mail->addAddress('joe@example.net', 'Joe User');  
 
     //Тело письма
-    $body = '<h1>Добрый день. Новая заявка.</h1>';
+    $body = '<html><h1>Добрый день. </h1><br><h2>Новая заявка.</h2>';
 
     if(trim(!empty($_POST['name']))){
         $body.='<p><strong>Имя клиента:</strong> '.$_POST['name'].'</p>';
@@ -28,24 +36,24 @@
         $body.='<p><strong>Почта клиента:</strong> '.$_POST['email'].'</p>';
     }
     if(trim(!empty($_POST['phone']))){
-        $body.='<p><strong>Номер телефона клиента:</strong> '.$_POST['phone'].'</p>';
+        $body.='<p><strong>Номер телефона:</strong> '.$_POST['phone'].'</p>';
     }
     if(trim(!empty($_POST['message']))){
-        $body.='<p><strong>Описание заявки:</strong> '.$_POST['message'].'</p>';
+        $body.='<p><strong>Описание заявки:</strong> '.$_POST['message'].'</p><br><p>С уважением, Ваш новый клиент!</p></html>';
     }
 
-    //Прикрепление файла
-    if(!empty($_FILES['image']['tmp_name'])) {
-        //путь загрузки файла
-        $filePath = __DIR__ . "/files/" . $_FILES['image']['name'];
-        //грузим файл
-        if (copy($_FILES['image']['tmp_name'], $filePath)){
-            $filePath = $filePath;
-            $body.='<p><strong>Фотография объекта в приложении</strong></p>';
-            $mail->addAttachment($fileAttach);
+        //Прикрепление файла
+    if (!empty($_FILES['image']['name'])) {
+        $uploadfile = tempnam(sys_get_temp_dir(), sha1($_FILES['image']['name']));
+        $filename = $_FILES['image']['name'];
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadfile)) {
+            $body.='<br><p>P.S. фото объекта во вложении.</p>';
+            $mail->addAttachment($uploadfile, $filename);
         }
     }
 
+    $mail->IsHTML(true);
+    $mail->Subject = 'Заявка на ремонтные работы';
     $mail->Body = $body;
 
     //Отправляем
